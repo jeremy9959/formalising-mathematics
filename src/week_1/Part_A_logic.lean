@@ -543,29 +543,19 @@ end
 /-- `∨` is associative -/
 theorem or.assoc : (P ∨ Q) ∨ R ↔ P ∨ Q ∨ R :=
 begin
-  split,
-    intro hPoQR,
-    cases hPoQR with hPQ hR,
-    cases hPQ with hP hQ,
-    apply or.intro_left,
-    exact hP,
-  right,
-  apply or.intro_left,
-  exact hQ,
-  right,
-  right,
-  exact hR,
-  intro hP,
-  cases hP with hA hB,
-  left,
-  apply or.intro_left,
-  exact hA,
-  cases hB with hB1 hB2,
-  left,
-  right,
-  exact hB1,
-  right,
-  exact hB2,
+ split,
+ {
+   rintro (( hP | hQ ) | hR ),
+   {left, assumption},
+   {right, left,assumption},
+   {right, right, assumption},
+ },
+ {
+   rintro (hP | hQ | hR),
+   {left, left, assumption},
+   {left, right, assumption},
+   {right, assumption},
+ }
 end
 
 /-!
