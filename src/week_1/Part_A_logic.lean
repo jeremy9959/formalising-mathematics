@@ -564,34 +564,49 @@ end
 
 theorem or.imp : (P → R) → (Q → S) → P ∨ Q → R ∨ S :=
 begin
-  sorry,
+  intros hPR hQS hPoQ,
+  cases hPoQ with hP hQ,
+  left,
+  exact hPR hP,
+  right,
+  exact hQS hQ,
 end
 
 theorem or.imp_left : (P → Q) → P ∨ R → Q ∨ R :=
 begin
-  sorry,
+  intro hPQ,
+  intro hPR,
+  cases hPR with hP hR,
+  {left, exact hPQ hP},
+  {right, assumption}.  
 end
 
 theorem or.imp_right : (P → Q) → R ∨ P → R ∨ Q :=
 begin
-  sorry,
+  rw or.comm R,
+  rw or.comm R,
+  apply or.imp_left,
 end
 
 theorem or.left_comm : P ∨ Q ∨ R ↔ Q ∨ P ∨ R :=
 begin
-  -- Try rewriting `or.comm` and `or.assoc` to do this one quickly.
-  sorry,
+  rw or.comm P,
+  rw or.assoc,
+  rw or.comm R,
 end
 
 /-- the recursor for `∨` -/
 theorem or.rec : (P → R) → (Q → R) → P ∨ Q → R :=
 begin
-  sorry,
+  intros hPR hQR hPoQ,
+  apply or.elim _ _ _ hPoQ hPR hQR,
 end
 
 theorem or_congr : (P ↔ R) → (Q ↔ S) → (P ∨ Q ↔ R ∨ S) :=
 begin
-  sorry,
+   rintro hPR hQS,
+   rw hPR,
+   rw hQS,
 end
 
 /-!
@@ -617,23 +632,39 @@ Hint: how many cases are there?
 /-- eliminator for `false` -/
 theorem false.elim : false → P :=
 begin
-  sorry,
+  intro h,
+  cases h,
 end
 
 theorem and_true_iff : P ∧ true ↔ P :=
 begin
-  sorry,
+  split,
+  intro hPt,
+  cases hPt with hP ht,
+  exact hP,
+  intro P,
+  split,
+  exact P,
+  trivial,
 end
 
 theorem or_false_iff : P ∨ false ↔ P :=
 begin
-  sorry,
+  split,
+  intros hPf,
+  cases hPf with hP hf,
+  exact hP,
+  cases hf,
+  apply or.intro_left,
 end
 
 -- false.elim is handy for this one
 theorem or.resolve_left : P ∨ Q → ¬P → Q :=
 begin
-  sorry,
+  rintros (hP | hQ) hnP,
+  apply false.elim,
+  exact hnP hP,
+  exact hQ,
 end
 
 -- this one you can't do constructively
