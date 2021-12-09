@@ -88,15 +88,22 @@ theorem mem_of_mem (hX : X ∈ P.C) (hY : Y ∈ P.C) {a b : α}
 begin
   -- you might want to start with `have hXY : X = Y`
   -- and prove it from the previous lemma
-  sorry,
+  have hXY : X = Y,
+  apply eq_of_mem hX hY haX,
+  assumption,
+  cases hXY with hX hY,
+  assumption,
 end
 
 /-- Every term of type `α` is in one of the blocks for a partition `P`. -/
 theorem mem_block (a : α) : ∃ X : set α, X ∈ P.C ∧ a ∈ X :=
 begin
   -- an interesting way to start is
-  -- `obtain ⟨X, hX, haX⟩ := P.Hcover a,`
-  sorry,
+  obtain ⟨X, hX, haX⟩ := P.Hcover a,
+  use X,
+  split,
+  assumption,
+  assumption,
 end
 
 end partition
