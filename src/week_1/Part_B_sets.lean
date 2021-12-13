@@ -18,12 +18,19 @@ Let's think about `X ⊆ Y`. Typeset `⊆` with `\sub` or `\ss`
 lemma subset_def : X ⊆ Y ↔ ∀ a, a ∈ X → a ∈ Y :=
 begin
   -- true by definition
-  refl
+  refl,
 end
 
 lemma subset_refl : X ⊆ X :=
 begin
+<<<<<<< HEAD
   refl,
+=======
+  rw subset_def,
+  intro,
+  intro,
+  assumption,
+>>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 lemma subset_trans (hXY : X ⊆ Y) (hYZ : Y ⊆ Z) : X ⊆ Z :=
@@ -41,7 +48,12 @@ begin
   -- You can also think of it as an implication:
   -- "if a is in Ω, and if a ∈ Y, then a ∈ Z". Because it's an implication,
   -- you can `apply hYZ`. This is a really useful skill!
-  sorry
+  rw subset_def at *,
+  intro a,
+  intro haX,
+  apply hYZ a,
+  apply hXY a,
+  assumption,
 end
 
 /-!
@@ -54,7 +66,7 @@ The name of this theorem is `set.ext_iff`.
 
 example : X = Y ↔ (∀ a, a ∈ X ↔ a ∈ Y) :=
 begin
-  exact set.ext_iff
+  exact set.ext_iff,
 end
 
 -- In practice, you often have a goal `⊢ X = Y` and you want to reduce
@@ -64,12 +76,20 @@ end
 
 lemma subset.antisymm (hXY : X ⊆ Y) (hYX : Y ⊆ X) : X = Y :=
 begin
+<<<<<<< HEAD
   ext a,
   split,
   apply hXY,
   apply hYX,
   -- start with `ext a`,
 
+=======
+    rw set.ext_iff,
+    intro,
+    split,
+    apply hXY,
+    apply hYX,
+>>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 /-!
@@ -103,6 +123,7 @@ begin
   ext a,
   rw union_def,
   split,
+<<<<<<< HEAD
   {intro hAX,
   cases hAX with hX1 hX2,
   exact hX1,
@@ -110,6 +131,12 @@ begin
   {intro haX,
   left, 
   exact haX}
+=======
+  rintro (haX | haX2),
+  assumption,
+  assumption,
+  apply or.intro_left,
+>>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 lemma subset_union_left : X ⊆ X ∪ Y :=

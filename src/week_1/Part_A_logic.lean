@@ -333,9 +333,7 @@ begin
   intro hP,
   intro hQ,
   apply hPaQR,
-  split,
-    exact hP,
-  exact hQ,
+  exact ⟨ hP, hQ ⟩,
 end
 
 
