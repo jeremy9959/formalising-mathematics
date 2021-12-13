@@ -23,12 +23,17 @@ end
 
 lemma subset_refl : X ⊆ X :=
 begin
-  sorry,
+  refl,
 end
 
 lemma subset_trans (hXY : X ⊆ Y) (hYZ : Y ⊆ Z) : X ⊆ Z :=
 begin
-  -- If you start with `rw subset_def at *` then you
+  rw subset_def at *,
+  intros a ha,
+  apply hYZ a,
+  apply hXY a,
+  exact ha,
+    -- If you start with `rw subset_def at *` then you
   -- will have things like `hYZ : ∀ (a : Ω), a ∈ Y → a ∈ Z`
   -- You need to think of `hYZ` as a function, which has two
   -- inputs: first a term `a` of type `Ω`, and second a proof `haY` that `a ∈ Y`.
@@ -59,8 +64,12 @@ end
 
 lemma subset.antisymm (hXY : X ⊆ Y) (hYX : Y ⊆ X) : X = Y :=
 begin
+  ext a,
+  split,
+  apply hXY,
+  apply hYX,
   -- start with `ext a`,
-  sorry
+
 end
 
 /-!
@@ -91,34 +100,77 @@ end
 
 lemma union_self : X ∪ X = X :=
 begin
-  sorry
+  ext a,
+  rw union_def,
+  split,
+  {intro hAX,
+  cases hAX with hX1 hX2,
+  exact hX1,
+  exact hX2},
+  {intro haX,
+  left, 
+  exact haX}
 end
 
 lemma subset_union_left : X ⊆ X ∪ Y :=
 begin
-  sorry
+  rw subset_def,
+  intro ha,
+  intro haX,
+  rw union_def,
+  left,
+  exact haX,
 end
 
 lemma subset_union_right : Y ⊆ X ∪ Y :=
 begin
-  sorry
+  rw subset_def,
+  intro ha,
+  intro haY,
+  rw union_def,
+  right,
+  exact haY,
 end
 
 lemma union_subset_iff : X ∪ Y ⊆ Z ↔ X ⊆ Z ∧ Y ⊆ Z :=
 begin
-  sorry
+  split,
+    intro hXuYinZ,
+    split,
+      intros a ha,
+      apply hXuYinZ,
+      left, assumption,
+    intros a ha,
+    apply hXuYinZ,
+    right, assumption,
+  
+  rintros ⟨ hXZ,hYZ⟩ a (h1 | h2),
+  apply hXZ,assumption,
+  apply hYZ,assumption,
 end
 
 variable (W : set Ω)
 
 lemma union_subset_union (hWX : W ⊆ X) (hYZ : Y ⊆ Z) : W ∪ Y ⊆ X ∪ Z :=
 begin
-  sorry
+  rw union_subset_iff at *,
+  split,
+    intro a,
+    intro haW,
+   -- rw union_def,
+    left,
+    apply hWX, assumption,
+  intro a,
+  intro haY,
+  -- rw union_def,
+  right,
+  apply hYZ,
+  assumption,
 end
 
 lemma union_subset_union_left (hXY : X ⊆ Y) : X ∪ Z ⊆ Y ∪ Z :=
 begin
-  sorry
+  
 end
 
 -- etc etc
