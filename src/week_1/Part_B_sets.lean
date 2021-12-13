@@ -23,14 +23,7 @@ end
 
 lemma subset_refl : X ⊆ X :=
 begin
-<<<<<<< HEAD
   refl,
-=======
-  rw subset_def,
-  intro,
-  intro,
-  assumption,
->>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 lemma subset_trans (hXY : X ⊆ Y) (hYZ : Y ⊆ Z) : X ⊆ Z :=
