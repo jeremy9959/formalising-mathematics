@@ -76,10 +76,18 @@ namespace partition
 variables {α : Type} {P : partition α} {X Y : set α}
 
 /-- If X and Y are blocks, and a is in X and Y, then X = Y. -/
-theorem eq_of_mem (hX : X ∈ P.C) (hY : Y ∈ P.C) {a : α} (haX : a ∈ X)
-  (haY : a ∈ Y) : X = Y :=
+--theorem eq_of_mem (hX : X ∈ P.C) (hY : Y ∈ P.C) {a : α} (haX : a ∈ X)
+  --(haY : a ∈ Y) : X = Y :=
 -- Proof: follows immediately from the disjointness hypothesis.
-P.Hdisjoint _ _ hX hY ⟨a, haX, haY⟩
+--P.Hdisjoint _ _ hX hY ⟨a, haX, haY⟩
+
+theorem eq_of_mem (hX : X∈ P.C) (hY : Y∈ P.C) {a:α} (haX : a∈ X) (haY : a∈ Y) : X=Y :=
+begin
+exact P.Hdisjoint _ _ hX hY ⟨ a, haX, haY⟩,
+end
+
+
+
 
 /-- If a is in two blocks X and Y, and if b is in X,
   then b is in Y (as X=Y) -/
@@ -159,7 +167,8 @@ begin
   -- You can extract the things with
   -- `rcases hR with ⟨hrefl, hsymm, htrans⟩,` or
   -- `obtain ⟨hrefl, hsymm, htrans⟩ := hR,`
-  sorry,
+  obtain ⟨ hrefl, hsymm, htrans ⟩ := hR,
+  exact hrefl a,
 end
 
 lemma cl_sub_cl_of_mem_cl {a b : α} :
@@ -167,7 +176,12 @@ lemma cl_sub_cl_of_mem_cl {a b : α} :
   cl R a ⊆ cl R b :=
 begin
   -- remember `set.subset_def` says `X ⊆ Y ↔ ∀ a, a ∈ X → a ∈ Y
-  sorry,
+  obtain ⟨ hrefl, hsymm, htrans ⟩ := hR,
+  intro ha,
+  rw set.subset_def,
+  intro,
+  intro xRa,
+  exact htrans xRa ha,
 end
 
 lemma cl_eq_cl_of_mem_cl {a b : α} :
@@ -175,7 +189,19 @@ lemma cl_eq_cl_of_mem_cl {a b : α} :
   cl R a = cl R b :=
 begin
   -- remember `set.subset.antisymm` says `X ⊆ Y → Y ⊆ X → X = Y`
-  sorry
+  intro aRb,
+  ext c,
+  split,
+  apply cl_sub_cl_of_mem_cl,
+  assumption,
+  assumption,
+  obtain ⟨ hrefl, hsymm, htrans ⟩ := hR,
+  intro cRb,
+  have foo := hsymm cRb,
+  have foo2:= hsymm aRb,
+  have foo3:= hsymm foo,
+  have foo4:= htrans foo3 foo2,
+  exact foo4,
 end
 
 end equivalence_classes -- section
