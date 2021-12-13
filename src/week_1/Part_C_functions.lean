@@ -164,4 +164,26 @@ begin
   apply surjective_comp hfs hgs,
 end
 
+lemma surjective_surjective  (hgf : surjective ( g∘ f)) : surjective g :=
+begin
+rw surjective_def,
+intro y,
+cases hgf y,
+use f w,
+assumption,
+end
+
+lemma injective_injective (hgf: injective  (g∘ f)) : injective f :=
+begin
+rw injective_def,
+intro,
+intro,
+intro hfg,
+apply hgf,
+rw comp_def,
+rw comp_def,
+have eq := congr_arg g hfg,
+assumption,
+end
+
 end xena
