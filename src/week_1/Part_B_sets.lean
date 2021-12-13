@@ -123,7 +123,6 @@ begin
   ext a,
   rw union_def,
   split,
-<<<<<<< HEAD
   {intro hAX,
   cases hAX with hX1 hX2,
   exact hX1,
@@ -131,12 +130,6 @@ begin
   {intro haX,
   left, 
   exact haX}
-=======
-  rintro (haX | haX2),
-  assumption,
-  assumption,
-  apply or.intro_left,
->>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 lemma subset_union_left : X ⊆ X ∪ Y :=
@@ -197,7 +190,14 @@ end
 
 lemma union_subset_union_left (hXY : X ⊆ Y) : X ∪ Z ⊆ Y ∪ Z :=
 begin
-  
+  intro a,
+  intro haXY,
+  cases haXY with haX haY,
+    {have foo:=hXY haX,
+    left,
+    assumption},
+  {right,
+  assumption}
 end
 
 -- etc etc
@@ -206,19 +206,38 @@ end
 
 lemma inter_subset_left : X ∩ Y ⊆ X :=
 begin
-  sorry
+  intro a,
+  intro haXY,
+  cases haXY with haX haY,
+  assumption,
 end
 
 -- don't forget `ext` to make progress with equalities of sets
 
 lemma inter_self : X ∩ X = X :=
 begin
-  sorry
+  ext a,
+  split,
+  apply inter_subset_left,
+  intro haX,
+  exact ⟨ haX, haX⟩,
 end
 
 lemma inter_comm : X ∩ Y = Y ∩ X :=
 begin
-  sorry
+  rw set.ext_iff,
+  intro,
+  split,
+  {
+    intro haXY,
+    cases haXY with haX haY,
+    exact ⟨ haY, haX⟩,
+  },
+  { 
+    intro haYX,
+    cases haYX with haY haX,
+    exact ⟨ haX, haY⟩,
+  }
 end
 
 lemma inter_assoc : X ∩ (Y ∩ Z) = (X ∩ Y) ∩ Z :=
@@ -234,12 +253,44 @@ end
 
 lemma not_exists_iff_forall_not : ¬ (∃ a, a ∈ X) ↔ ∀ b, ¬ (b ∈ X) :=
 begin
-  sorry,
+  split,
+  {intro h,
+   intro b,
+   intro hb,
+   apply h,
+   use b,
+   assumption},
+  {intro h,
+  rintros ⟨ a, ha⟩,
+  have foo := h a,
+  apply foo,
+  assumption,
+  }
+  
 end
+
+open classical
 
 example : ¬ (∀ a, a ∈ X) ↔ ∃ b, ¬ (b ∈ X) :=
 begin
-  sorry,
+  split,
+    {intro h,
+    by_contra hnX, 
+    apply h,
+    intro a,
+    by_contra hXa,
+    apply hnX,
+    use a,
+    },
+    {
+      intro h,
+      cases h with b hb,
+      intro h,
+      apply hb,
+      apply h,
+    }
+
+  
 end
 
 end xena

@@ -124,3 +124,8 @@ hpqpr.elim
   (assume hpr : p→ r,  (assume hp : p, or.intro_right q (hpr hp)))
 
 
+theorem t₁₃ : ((p → q) ∨ (p → r)) ↔ (p → (q ∨ r)) :=
+iff.intro
+  (t₁₁ p q r)
+  (t₁₀ p q r)
+
