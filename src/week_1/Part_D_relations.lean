@@ -21,7 +21,6 @@ The following things are already in Lean:
 `reflexive R := ∀ (x : α), R x x`
 `symmetric R := ∀ ⦃x y : α⦄, R x y → R y x`
 `transitive R := ∀ ⦃x y z : α⦄, R x y → R y z → R x z`
-
 `equivalence R := reflexive R ∧ symmetric R ∧ transitive R`
 
 In the file below, we will define partitions of `α` and "build some
@@ -238,20 +237,39 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
       cases R with R hR,
       -- If X is an equivalence class then X is nonempty.
       show ∀ (X : set α), (∃ (a : α), X = cl R a) → X.nonempty,
-      sorry,
+      intro X,
+      intro hRa,
+      cases hRa with a hX,
+      rw hX,
+      use a,
+      rw mem_cl_iff,
+      obtain ⟨ hrefl, hsymm, htrans ⟩ := hR,
+      apply hrefl,
     end,
     Hcover := begin
       cases R with R hR,
       -- The equivalence classes cover α
       show ∀ (a : α), ∃ (X : set α) (H : ∃ (b : α), X = cl R b), a ∈ X,
-      sorry,
+      intro a,
+      use cl R a,
+      split,
+        use a,
+      rw mem_cl_iff,
+      apply hR.1,
     end,
     Hdisjoint := begin
       cases R with R hR,
       -- If two equivalence classes overlap, they are equal.
       show ∀ (X Y : set α), (∃ (a : α), X = cl R a) →
         (∃ (b : α), Y = cl _ b) → (X ∩ Y).nonempty → X = Y,
-      sorry,
+      rintros X Y ⟨ a, rfl⟩ ⟨ b, rfl⟩ ⟨ c, hca, hcb ⟩,
+      dsimp at *,
+      apply cl_eq_cl_of_mem_cl hR,
+      apply hR.2.2,
+        change R a c,
+        apply hR.2.1,
+        exact hca,
+      exact hcb,
     end },
   -- Conversely, say P is an partition. 
   inv_fun := λ P, 
@@ -265,14 +283,23 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
     { -- It's reflexive
       show ∀ (a : α)
         (X : set α), X ∈ P.C → a ∈ X → a ∈ X,
-      sorry,
+      intros a X XPc haX,
+      assumption,
     },
     split,
     { -- it's symmetric
       show ∀ (a b : α),
         (∀ (X : set α), X ∈ P.C → a ∈ X → b ∈ X) →
          ∀ (X : set α), X ∈ P.C → b ∈ X → a ∈ X,
-      sorry,
+      intros a b,
+      intro h,
+      intro X,
+      intro hX,
+      intro hbX,
+      obtain ⟨ Y, hY, haY ⟩ := P.Hcover a,
+      specialize h Y hY haY,
+      exact mem_of_mem hY hX h hbX haY,
+
     },
     { -- it's transitive
       unfold transitive,
@@ -280,7 +307,12 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
         (∀ (X : set α), X ∈ P.C → a ∈ X → b ∈ X) →
         (∀ (X : set α), X ∈ P.C → b ∈ X → c ∈ X) →
          ∀ (X : set α), X ∈ P.C → a ∈ X → c ∈ X,
-      sorry,
+      intros a b c hbX hcX X hX haX,
+      apply hcX,
+      assumption,
+      apply hbX,
+      assumption,
+      assumption,
     }
   end⟩,
   -- If you start with the equivalence relation, and then make the partition
@@ -293,8 +325,20 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
     -- ... you have to prove two binary relations are equal.
     ext a b,
     -- so you have to prove an if and only if.
-    show (∀ (c : α), a ∈ cl R c → b ∈ cl R c) ↔ R a b,
-    sorry,
+    -- show (∀ (c : α), a ∈ cl R c → b ∈ cl R c) ↔ R a b,
+    split,
+      intro H,
+      apply hR.2.1,
+      apply H a,
+      apply hR.1,
+    intro hRab,
+    intro c,
+    intro aRc,
+    apply hR.2.2,
+    change R b a,
+    apply hR.2.1,
+    assumption,
+    assumption,
   end,
   -- Similarly, if you start with the partition, and then make the
   -- equivalence relation, and then construct the corresponding partition 
@@ -307,5 +351,38 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
     ext X,
     show (∃ (a : α), X = cl _ a) ↔ X ∈ P.C,
     dsimp only,
-    sorry,
+    split,
+    rintro ⟨ a, rfl⟩,
+    obtain ⟨ X, hX, haX ⟩ := P.Hcover a,
+    convert hX,
+    ext b,
+    rw mem_cl_iff,
+    split,
+      intro haY,
+      obtain ⟨ Y, hY, hbY⟩ := P.Hcover b,
+      specialize haY Y hY hbY,
+      convert hbY,
+      exact eq_of_mem hX hY haX haY,
+    intro hbX,
+    intro Y,
+    intro hY, 
+    intro hbY,
+    apply mem_of_mem hX hY hbX hbY haX,
+  {
+    intro hX,
+    have foo := P.Hnonempty X hX,
+    rcases foo with ⟨ a, ha ⟩,
+    use a,
+    ext b,
+    split,
+      intro hbX,
+      rw mem_cl_iff,
+      intros Y hY hbY,
+      exact mem_of_mem hX hY hbX hbY ha,
+  rw mem_cl_iff,
+  intro haY,
+  obtain ⟨ Y, hY, hbY ⟩ := P.Hcover b,
+  specialize haY Y hY hbY,
+  exact mem_of_mem hY hX haY ha hbY,
+  }
   end }

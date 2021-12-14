@@ -233,13 +233,13 @@ example (α : Type) : {R : α → α → Prop // equivalence R} ≃ partition α
       -- If X is an equivalence class then X is nonempty.
       show ∀ (X : set α), (∃ (a : α), X = cl R a) → X.nonempty,
       -- let's assume X is the equivalence class of a
-      rintros _ ⟨a, rfl⟩,
+      rintros X ⟨a, rfl ⟩,
       -- we now have to prove that `cl R a` is nonempty,
       -- i.e. that there exists an element of `cl R a`. 
       -- In particular this goal is an `∃`. Let's use `a`.
       use a,
       -- let's change the goal to R a a
-      rw mem_cl_iff, -- comment out this line and the proof still works
+      --rw mem_cl_iff, -- comment out this line and the proof still works
       obtain ⟨hrefl, hsymm, htrans⟩ := hR,
       -- apply reflexivity of R
       apply hrefl,

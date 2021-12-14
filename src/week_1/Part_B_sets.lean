@@ -69,20 +69,10 @@ end
 
 lemma subset.antisymm (hXY : X ⊆ Y) (hYX : Y ⊆ X) : X = Y :=
 begin
-<<<<<<< HEAD
   ext a,
   split,
   apply hXY,
   apply hYX,
-  -- start with `ext a`,
-
-=======
-    rw set.ext_iff,
-    intro,
-    split,
-    apply hXY,
-    apply hYX,
->>>>>>> f5ce07d97373c97b23b05da322cc073b9d351772
 end
 
 /-!
@@ -285,6 +275,5 @@ begin
 
   
 end
-
 end xena
 
