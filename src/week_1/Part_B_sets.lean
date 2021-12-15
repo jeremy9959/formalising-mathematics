@@ -69,10 +69,11 @@ end
 
 lemma subset.antisymm (hXY : X ⊆ Y) (hYX : Y ⊆ X) : X = Y :=
 begin
-  ext a,
-  split,
-  apply hXY,
-  apply hYX,
+    rw set.ext_iff,
+    intro,
+    split,
+    apply hXY,
+    apply hYX,
 end
 
 /-!
@@ -225,7 +226,23 @@ end
 
 lemma inter_assoc : X ∩ (Y ∩ Z) = (X ∩ Y) ∩ Z :=
 begin
-  sorry
+  rw set.ext_iff,
+  intro,
+  split,
+    intro hx,
+    cases hx with ha hb,
+    cases hb with hb hc,
+    split,
+    split,
+    assumption, assumption, assumption,
+  intro hx,
+  cases hx with ha hb,
+  cases ha with hb hc,
+  split,
+  assumption,
+  split,
+  assumption,
+  assumption,
 end
 
 /-!
@@ -275,5 +292,6 @@ begin
 
   
 end
+
 end xena
 

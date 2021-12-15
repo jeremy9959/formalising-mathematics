@@ -110,15 +110,13 @@ end
 /-- A subgroup is closed under multiplication. -/
 theorem mul_mem {x y : G} : x ∈ H → y ∈ H → x * y ∈ H :=
 begin
-  -- what do you think?
-  sorry
+  apply H.mul_mem',
 end
 
 /-- A subgroup is closed under inverse -/
 theorem inv_mem {x : G} : x ∈ H → x⁻¹ ∈ H :=
 begin
-  -- what do you think?
-  sorry
+  apply H.inv_mem',
 end
 
 /-
@@ -145,7 +143,13 @@ we can make it a `simp` lemma.
 
 @[simp] theorem inv_mem_iff {x : G} : x⁻¹ ∈ H ↔ x ∈ H := 
 begin
-  sorry,
+  split,
+  intro h,
+  have hxii :=  inv_inv x,
+  rw ← hxii,
+  apply H.inv_mem,
+  assumption,
+exact H.inv_mem,
 end
 
 -- We could prove a bunch more theorems here. Let's just do one more.
@@ -153,7 +157,10 @@ end
 
 theorem mem_of_mem_mul_mem {x y : G} (hx : x ∈ H) (hxy : x * y ∈ H) : y ∈ H :=
 begin
-  sorry,
+  rw ← inv_mem_iff at hx,
+  have k := H.mul_mem hx hxy,
+  convert k,
+  simp,
 end
 
 /-

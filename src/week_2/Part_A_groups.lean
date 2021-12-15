@@ -132,15 +132,15 @@ in the theorems below.
 @[simp] theorem mul_one : a * 1 = a :=
 begin
   apply mul_eq_of_eq_inv_mul,
-  rw ← mul_left_inv,
-  
+  apply eq.symm,
+  rw mul_left_inv,
 end
 
 @[simp] theorem mul_right_inv : a * a⁻¹ = 1 :=
 begin
-  apply mul_eq_of_eq_inv_mul,
-
-
+    apply mul_eq_of_eq_inv_mul,
+    apply eq.symm,
+    apply mul_one,
 end
 
 -- Now let's talk about what that `@[simp]` means.
@@ -226,22 +226,29 @@ end
 
 @[simp] lemma mul_inv_cancel_left : a * (a⁻¹ * b) = b :=
 begin
-  sorry
+  rw ← mul_assoc,
+  simp,
 end
 
 @[simp] lemma inv_mul : (a * b)⁻¹ = b⁻¹ * a⁻¹ :=
 begin
-  sorry
+  apply mul_left_cancel (a*b),
+  rw mul_right_inv,
+  simp,
 end
 
 @[simp] lemma one_inv : (1 : G)⁻¹ = 1 :=
 begin
-  sorry
+  apply mul_left_cancel (1 : G),
+  rw mul_right_inv,
+  rw one_mul,
 end
 
 @[simp] lemma inv_inv : a ⁻¹ ⁻¹ = a :=
 begin
-  sorry
+  apply mul_left_cancel a⁻¹,
+  rw mul_right_inv,
+  rw mul_left_inv,
 end
 
 /-
@@ -265,7 +272,11 @@ then you get Buchberger's algorithm for computing Gröbner bases.
 -/
 
 -- Now let's try our example...
-example : (a * b) * 1⁻¹⁻¹ * b⁻¹ * (a⁻¹ * a⁻¹⁻¹⁻¹) * a = 1 := by simp -- short for begin simp end
+example : (a * b) * 1⁻¹⁻¹ * b⁻¹ * (a⁻¹ * a⁻¹⁻¹⁻¹) * a = 1 := 
+begin
+  simp,
+end
+ -- short for begin simp end
 
 -- The simplifier solves it!
 
@@ -285,22 +296,38 @@ is one.
 
 lemma eq_mul_inv_of_mul_eq {a b c : G} (h : a * c = b) : a = b * c⁻¹ :=
 begin
-  sorry
+  rw ← h,
+  simp,
 end
 
 lemma eq_inv_mul_of_mul_eq {a b c : G} (h : b * a = c) : a = b⁻¹ * c :=
 begin
-  sorry
+  rw ← h,
+  simp,
 end
 
 lemma mul_left_eq_self {a b : G} : a * b = b ↔ a = 1 :=
 begin
-  sorry
+  split,
+  intro h,
+  replace h := eq_mul_inv_of_mul_eq h,
+  simp [h],
+intro h,
+rw h,
+rw one_mul,
 end
 
 lemma mul_right_eq_self {a b : G} : a * b = a ↔ b = 1 :=
 begin
-  sorry
+  split,
+    intro h,
+    replace h := eq_inv_mul_of_mul_eq h,
+    rw ← mul_left_inv a,
+    assumption,
+intro h,
+apply mul_left_cancel a⁻¹,
+simp,
+assumption,
 end
 
 lemma eq_inv_of_mul_eq_one {a b : G} (h : a * b = 1) : a = b⁻¹ :=
