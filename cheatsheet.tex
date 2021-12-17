@@ -1,0 +1,185 @@
+\hypertarget{cheatsheet-for-tactics}{%
+\section{Cheatsheet for tactics}\label{cheatsheet-for-tactics}}
+
+\hypertarget{intro-h}{%
+\subsection{\texorpdfstring{\texttt{intro\ h}}{intro h}}\label{intro-h}}
+
+\begin{itemize}
+\tightlist
+\item
+  `Assume h is a proof of P'
+\item
+  `Assume P is true'
+\item
+  'Let a be an arbitrary element of X\texttt{in\ a}∀ a ∈ X` term.
+\end{itemize}
+
+If the goal is \texttt{P\ →\ \ Q}, creates a hypothesis h : P and
+changes the goal to \texttt{Q.}
+
+If the goal is \texttt{∀\ a∈\ X,\ p\ x} then \texttt{intro\ a} creates a
+term \texttt{a} of type \texttt{X} and changes the goal to
+\texttt{p\ x}.
+
+\hypertarget{intros-h1-h2}{%
+\subsection{\texorpdfstring{\texttt{intros\ h1\ h2}}{intros h1 h2}}\label{intros-h1-h2}}
+
+Does several \texttt{intro} commands at once.
+
+\hypertarget{exact-h}{%
+\subsection{\texorpdfstring{\texttt{exact\ h}}{exact h}}\label{exact-h}}
+
+\begin{itemize}
+\tightlist
+\item
+  Our hypothesis \texttt{h} establishes the result
+\end{itemize}
+
+Applies the hypothesis \texttt{h} to prove the theorem. \texttt{h} must
+be exactly the desired goal. .
+
+\hypertarget{assumption}{%
+\subsection{\texorpdfstring{\texttt{assumption}}{assumption}}\label{assumption}}
+
+\begin{itemize}
+\tightlist
+\item
+  Now we see that our hypotheses yield the result.
+\end{itemize}
+
+If one of the hypotheses exactly proves the theorem, apply that
+hypothesis.
+
+\hypertarget{apply}{%
+\subsection{\texorpdfstring{\texttt{apply}}{apply}}\label{apply}}
+
+\begin{itemize}
+\tightlist
+\item
+  Given \texttt{h}, to show \texttt{Q} it suffices to show \texttt{P}.
+\end{itemize}
+
+If a hypothesis says \texttt{h\ :\ P\ →\ Q} and our goal is \texttt{Q}
+then \texttt{apply\ h} replaces \texttt{Q} by \texttt{P}.
+
+\hypertarget{rw-or-rewrite}{%
+\subsection{\texorpdfstring{\texttt{rw} or
+\texttt{rewrite}}{rw or rewrite}}\label{rw-or-rewrite}}
+
+\begin{itemize}
+\item
+  Given \texttt{h\ :\ a=b} we can replace \texttt{a} by \texttt{b} (or
+  in the goal or in a hypothesis.
+\item
+  By hypothesis \texttt{h}, we can replace \emph{left side of
+  \texttt{h}} with \emph{right side of \texttt{h}}. Or, with the
+  \texttt{←} version, we can replace the \emph{right side of \texttt{h}}
+  with the \emph{left side of \texttt{h}} in the goal.
+\end{itemize}
+
+Given a hypothesis that asserts the equality of two things (\texttt{=}
+or \texttt{⟺}), replace one thing by the other.
+
+\hypertarget{to-replace-in-the-goal}{%
+\subsubsection{\texorpdfstring{To replace in the
+\emph{goal}:}{To replace in the goal:}}\label{to-replace-in-the-goal}}
+
+By default, given \texttt{h\ :\ a=b}, the command \texttt{rw\ h}
+replaces \texttt{a} by \texttt{b} The command \texttt{rw\ ←\ h} replaces
+\texttt{b} by \texttt{a}.
+
+\hypertarget{to-replace-in-a-hypothesis-use-at.}{%
+\subsubsection{\texorpdfstring{To replace in a \emph{hypothesis}, use
+\texttt{at}.}{To replace in a hypothesis, use at.}}\label{to-replace-in-a-hypothesis-use-at.}}
+
+Given hypotheses \texttt{hab:\ a=b} and \texttt{hbc:\ b=c} then
+\texttt{rw\ hbc\ at\ hab} changes \texttt{hab} to \texttt{a=c}. Note
+that you are using \texttt{hbc} to rewrite \texttt{hab}.
+
+\hypertarget{by_contra}{%
+\subsection{\texorpdfstring{\texttt{by\_contra}}{by\_contra}}\label{by_contra}}
+
+\begin{itemize}
+\tightlist
+\item
+  We will prove the contrapositive, so assume the conclusion is false.
+\end{itemize}
+
+The tactic \texttt{by\_contra} makes the negation of the goal a
+hypothesis and changes the goal to \texttt{false}.
+
+\hypertarget{cases}{%
+\subsection{\texorpdfstring{\texttt{cases}}{cases}}\label{cases}}
+
+\begin{itemize}
+\tightlist
+\item
+  Given \texttt{P\ ∨\ Q}, we consider separately the cases when
+  \texttt{P} is true and when \texttt{Q} is true. (\texttt{P\ ∨\ Q} is a
+  hypothesis)
+\item
+  To prove \texttt{P\ ∧\ Q} we prove \texttt{P} and \texttt{Q}
+  separately.
+\item
+  If we know there exists an \texttt{x} of type \texttt{T} satisfying a
+  property \texttt{p\ x}, we can assume separately that \texttt{x} is of
+  type \texttt{T} and that \texttt{p\ x} is a hypothesis. In other
+  words, decompose a \texttt{∃\ x,\ p\ x} hypothesis into \texttt{∃\ x}
+  hypothesis and a \texttt{p\ x} hypothesis.
+\end{itemize}
+
+If \texttt{x} is a \emph{hypothesis} about an inductive type then
+\texttt{cases} breaks up that hypothesis into its component parts. For
+example, if \texttt{h} is a proof of an \texttt{and} term then
+\texttt{cases\ h} is are the separate proofs of the terms. If `h' is a
+proof about a product, then \texttt{cases\ h} are the separate proofs of
+the terms.
+
+\hypertarget{left-and-right}{%
+\subsection{\texorpdfstring{\texttt{left} and
+\texttt{right}}{left and right}}\label{left-and-right}}
+
+\begin{itemize}
+\tightlist
+\item
+  It suffices to prove the proposition on the left/right.
+\end{itemize}
+
+When a goal is made up of two parts, either of which suffices,
+\texttt{left} and \texttt{right} replace the goal with the corresponding
+part. For example, if the goal is \texttt{P\ ∨\ Q} then \texttt{left} is
+like \texttt{apply} for the implication \texttt{P\ →\ P\ ∨\ Q} and right
+is \texttt{apply} for \texttt{Q\ →\ P\ ∨\ Q}.
+
+\hypertarget{use}{%
+\subsection{\texorpdfstring{\texttt{use}}{use}}\label{use}}
+
+\begin{itemize}
+\tightlist
+\item
+  Then \texttt{x} satisfies the desired conditions.
+\end{itemize}
+
+\texttt{use\ x} says to instantiate the \texttt{∃\ y,\ p\ y} clause of a
+goal with x, turning the goal into \texttt{p\ x}.
+
+\hypertarget{split}{%
+\subsection{\texorpdfstring{\texttt{split}}{split}}\label{split}}
+
+\begin{itemize}
+\tightlist
+\item
+  We consider the component propositions to our conclusion in turn.
+\end{itemize}
+
+\texttt{split} breaks up a compound goal (like \texttt{P\ ∧\ Q} or
+\texttt{P\ ⟺\ Q}) into subgoals.
+
+\hypertarget{refl}{%
+\subsection{\texorpdfstring{\texttt{refl}}{refl}}\label{refl}}
+
+\begin{itemize}
+\tightlist
+\item
+  True by definition.
+\end{itemize}

@@ -1,3 +1,6 @@
+---
+mathfont: TeXGyreDejaVuMath-Regular
+---
 # Cheatsheet for tactics
 
 ## `intro h` 
@@ -51,7 +54,7 @@ replaces `Q` by `P`.
 - By hypothesis `h`, we can replace *left side of `h`* with *right side of `h`*. Or, with the `←` version, we can replace the *right side of `h`* with the *left side of `h`* in the goal.
 
 
-Given a hypothesis that asserts the equality of two things (`=` or `⟺`),
+Given a hypothesis that asserts the equality of two things (`=` or `↔`),
 replace one thing by the other.
 
 ### To replace in the *goal*:
@@ -93,7 +96,7 @@ proofs of the terms.
 
 - Then `x` satisfies the desired conditions.
 
-`use x` says to instantiate the `∃ y, p y` clause of a goal with x, turning the goal into `p y`.
+`use x` says to instantiate the `∃ y, p y` clause of a goal with x, turning the goal into `p x`.
 
 
  
@@ -101,7 +104,7 @@ proofs of the terms.
 
 - We consider the component propositions to our conclusion in turn.
 
-`split` breaks up a compound goal (like `P ∧ Q` or `P ⟺ Q`) into subgoals. 
+`split` breaks up a compound goal (like `P ∧ Q` or `P ↔  Q`) into subgoals. 
 
 
 ## `refl`

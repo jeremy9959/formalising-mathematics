@@ -21,18 +21,19 @@ begin
   intro h,
   cases h with hp hq,
   -- case hp : p
-  right, exact hp,
+  apply or.inr, exact hp,
   -- case hq : q
-  left, exact hq
+  apply or.inl, exact hq,
 end
 
 example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
 begin
   intro h,
   cases h with x px,
-  constructor,
-  left,
-  assumption,
+  
+
+  
+
 end
 
 example (p q : ℕ → Prop) :
@@ -51,7 +52,8 @@ def swap_pair {α : Type u} {β : Type v} : α × β → β × α :=
 begin
   intro p,
   cases p with hp hq,
-  split,
+  constructor,
+
   exact hq,
   exact hp,
 end

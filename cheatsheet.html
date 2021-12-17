@@ -1,0 +1,67 @@
+<h1 id="cheatsheet-for-tactics">Cheatsheet for tactics</h1>
+<h2 id="intro-h"><code>intro h</code></h2>
+<ul>
+<li>‘Assume h is a proof of P’</li>
+<li>‘Assume P is true’</li>
+<li>’Let a be an arbitrary element of X<code>in a</code>∀ a ∈ X` term.</li>
+</ul>
+<p>If the goal is <code>P →  Q</code>, creates a hypothesis h : P and changes the goal to <code>Q.</code></p>
+<p>If the goal is <code>∀ a∈ X, p x</code> then <code>intro a</code> creates a term <code>a</code> of type <code>X</code> and changes the goal to <code>p x</code>.</p>
+<h2 id="intros-h1-h2"><code>intros h1 h2</code></h2>
+<p>Does several <code>intro</code> commands at once.</p>
+<h2 id="exact-h"><code>exact h</code></h2>
+<ul>
+<li>Our hypothesis <code>h</code> establishes the result</li>
+</ul>
+<p>Applies the hypothesis <code>h</code> to prove the theorem. <code>h</code> must be exactly the desired goal. .</p>
+<h2 id="assumption"><code>assumption</code></h2>
+<ul>
+<li>Now we see that our hypotheses yield the result.</li>
+</ul>
+<p>If one of the hypotheses exactly proves the theorem, apply that hypothesis.</p>
+<h2 id="apply"><code>apply</code></h2>
+<ul>
+<li>Given <code>h</code>, to show <code>Q</code> it suffices to show <code>P</code>.</li>
+</ul>
+<p>If a hypothesis says <code>h : P → Q</code> and our goal is <code>Q</code> then <code>apply h</code> replaces <code>Q</code> by <code>P</code>.</p>
+<h2 id="rw-or-rewrite"><code>rw</code> or <code>rewrite</code></h2>
+<ul>
+<li><p>Given <code>h : a=b</code> we can replace <code>a</code> by <code>b</code> (or in the goal or in a hypothesis.</p></li>
+<li><p>By hypothesis <code>h</code>, we can replace <em>left side of <code>h</code></em> with <em>right side of <code>h</code></em>. Or, with the <code>←</code> version, we can replace the <em>right side of <code>h</code></em> with the <em>left side of <code>h</code></em> in the goal.</p></li>
+</ul>
+<p>Given a hypothesis that asserts the equality of two things (<code>=</code> or <code>⟺</code>), replace one thing by the other.</p>
+<h3 id="to-replace-in-the-goal">To replace in the <em>goal</em>:</h3>
+<p>By default, given <code>h : a=b</code>, the command <code>rw h</code> replaces <code>a</code> by <code>b</code> The command <code>rw ← h</code> replaces <code>b</code> by <code>a</code>.</p>
+<h3 id="to-replace-in-a-hypothesis-use-at.">To replace in a <em>hypothesis</em>, use <code>at</code>.</h3>
+<p>Given hypotheses <code>hab: a=b</code> and <code>hbc: b=c</code> then <code>rw hbc at hab</code> changes <code>hab</code> to <code>a=c</code>. Note that you are using <code>hbc</code> to rewrite <code>hab</code>.</p>
+<h2 id="by_contra"><code>by_contra</code></h2>
+<ul>
+<li>We will prove the contrapositive, so assume the conclusion is false.</li>
+</ul>
+<p>The tactic <code>by_contra</code> makes the negation of the goal a hypothesis and changes the goal to <code>false</code>.</p>
+<h2 id="cases"><code>cases</code></h2>
+<ul>
+<li>Given <code>P ∨ Q</code>, we consider separately the cases when <code>P</code> is true and when <code>Q</code> is true. (<code>P ∨ Q</code> is a hypothesis)</li>
+<li>To prove <code>P ∧ Q</code> we prove <code>P</code> and <code>Q</code> separately.</li>
+<li>If we know there exists an <code>x</code> of type <code>T</code> satisfying a property <code>p x</code>, we can assume separately that <code>x</code> is of type <code>T</code> and that <code>p x</code> is a hypothesis. In other words, decompose a <code>∃ x, p x</code> hypothesis into <code>∃ x</code> hypothesis and a <code>p x</code> hypothesis.</li>
+</ul>
+<p>If <code>x</code> is a <em>hypothesis</em> about an inductive type then <code>cases</code> breaks up that hypothesis into its component parts. For example, if <code>h</code> is a proof of an <code>and</code> term then <code>cases h</code> is are the separate proofs of the terms. If ‘h’ is a proof about a product, then <code>cases h</code> are the separate proofs of the terms.</p>
+<h2 id="left-and-right"><code>left</code> and <code>right</code></h2>
+<ul>
+<li>It suffices to prove the proposition on the left/right.</li>
+</ul>
+<p>When a goal is made up of two parts, either of which suffices, <code>left</code> and <code>right</code> replace the goal with the corresponding part. For example, if the goal is <code>P ∨ Q</code> then <code>left</code> is like <code>apply</code> for the implication <code>P → P ∨ Q</code> and right is <code>apply</code> for <code>Q → P ∨ Q</code>.</p>
+<h2 id="use"><code>use</code></h2>
+<ul>
+<li>Then <code>x</code> satisfies the desired conditions.</li>
+</ul>
+<p><code>use x</code> says to instantiate the <code>∃ y, p y</code> clause of a goal with x, turning the goal into <code>p x</code>.</p>
+<h2 id="split"><code>split</code></h2>
+<ul>
+<li>We consider the component propositions to our conclusion in turn.</li>
+</ul>
+<p><code>split</code> breaks up a compound goal (like <code>P ∧ Q</code> or <code>P ⟺ Q</code>) into subgoals.</p>
+<h2 id="refl"><code>refl</code></h2>
+<ul>
+<li>True by definition.</li>
+</ul>

@@ -172,6 +172,7 @@ un-mathematical: it takes a subgroup apart into its pieces. I'll see if
 you can do the other two!
 -/
 
+
 /-- Two subgroups are equal if the underlying subsets are equal. -/
 theorem ext' {H K : subgroup G} (h : H.carrier = K.carrier) : H = K :=
 begin
@@ -179,7 +180,8 @@ begin
   cases H, -- H now broken up into its underlying 3-tuple.
   cases K,
   -- and now it must be obvious, so let's see if the simplifier can do it.
-  simp * at *, -- it can!
+  simp,
+  assumption,  
 end
 
 -- here's a variant. You can prove it using `ext'`. 
@@ -188,7 +190,10 @@ end
 theorem ext'_iff {H K : subgroup G} :
   H.carrier = K.carrier ↔ H = K :=
 begin
-  sorry,
+  split,
+  intro HK,
+  
+  
 end
 
 -- to do this next one, first apply the `ext'` theorem we just proved,
