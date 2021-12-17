@@ -129,3 +129,10 @@ iff.intro
   (t₁₁ p q r)
   (t₁₀ p q r)
 
+theorem t₁₄  (a b c : nat) (hab : a=b) (hbc : b=c) : a=c :=
+begin
+  rw hbc at hab,
+  assumption,
+end
+
+

@@ -41,12 +41,6 @@ begin
   -- You can also think of it as an implication:
   -- "if a is in Ω, and if a ∈ Y, then a ∈ Z". Because it's an implication,
   -- you can `apply hYZ`. This is a really useful skill!
-  rw subset_def at *,
-  intro a,
-  intro haX,
-  apply hYZ a,
-  apply hXY a,
-  assumption,
 end
 
 /-!
@@ -128,7 +122,7 @@ end
 
 lemma subset_union_right : Y ⊆ X ∪ Y :=
 begin
-  rw subset_def,
+ -- rw subset_def,
   intro ha,
   intro haY,
   rw union_def,
@@ -141,7 +135,8 @@ begin
   split,
     intro hXuYinZ,
     split,
-      intros a ha,
+      intro a,
+      intro ha,
       apply hXuYinZ,
       left, assumption,
     intros a ha,
