@@ -180,13 +180,13 @@ begin
   cases H, -- H now broken up into its underlying 3-tuple.
   cases K,
   -- and now it must be obvious, so let's see if the simplifier can do it.
-  simp,
-  assumption,  
+  congr,
+  exact h, 
 end
 
 -- here's a variant. You can prove it using `ext'`. 
 
-/-- Two subgroups are equal if and only if the underlying subsets are equal. -/
+/-- Two subgroups are equal if and only if the underlying subsets are equal. 
 theorem ext'_iff {H K : subgroup G} :
   H.carrier = K.carrier ↔ H = K :=
 begin
@@ -194,15 +194,20 @@ begin
   intro HK,
   
   
+  
+  
 end
-
+-/
 -- to do this next one, first apply the `ext'` theorem we just proved,
 -- and then use the `ext` tactic (which works on sets)
 
 /-- Two subgroups are equal if they have the same elements. -/
 @[ext] theorem ext {H K : subgroup G} (h : ∀ x, x ∈ H ↔ x ∈ K) : H = K :=
 begin
-  sorry,
+  apply ext',
+  ext a,
+  have ha := h a,
+  exact ha,
 end
 
 /-

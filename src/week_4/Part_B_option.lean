@@ -41,7 +41,7 @@ def g (y : Y) (f : X → Y) : option X → Y := λ t, option.rec y f t
 -- so it's `g f y`. Its values on `none` and `some x` are *by definition*
 -- what we want them to be:
 
-variables (f : X → Y) (y : Y)
+variables (f : X → Y) (y : Y) (x : X)
 
 example : (g y f) none = y := 
 begin
@@ -73,7 +73,9 @@ def option_func (f : X → Y) : option X → option Y :=
 -- `none` and `some x` cases.
 lemma option_id (ox : option X) : option_func (id : X → X) ox = ox :=
 begin
-  sorry
+  cases ox with hx,
+  refl,
+  refl,
 end
 
 variable (Z : Type)
@@ -81,7 +83,9 @@ variable (Z : Type)
 lemma option_comp (f : X → Y) (g : Y → Z) (ox : option X) :
   option_func (g ∘ f) ox = (option_func g) (option_func f ox) :=
 begin
-  sorry
+  cases ox with hx,
+  refl,
+  refl,
 end
 
 -- Now we define the structure of a monad, an `eta` and a `mu`.
