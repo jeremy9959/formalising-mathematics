@@ -135,5 +135,30 @@ begin
   assumption,
 end
 
+theorem t₁₅ (A B C : Prop) : ¬ (A ∨ B) → ((¬ A) ∧ (¬ B)):=
+begin
+  intro hnAB,
+  split,
+  intro hnA,
+  apply hnAB,
+  left,
+  exact hnA,
+  intro hnB,
+  apply hnAB,
+  right,
+  exact hnB,
+end
 
+/- 
+Suppose you have a proof that A ∨ B implies false.  Now suppose A is true.
+Then A ∨ B is true, so if you apply your proof you conclude false from A. 
+Similarly suppose B is true; then A ∨ B is true, so you conclude false from B.
+Thus given a proof that A∨ B implies false, you get proofs that A → false and B → false. 
+-/
+theorem t₁₆ (A B C : Prop) : ¬ (A ∨ B) → ((¬ A) ∧ (¬ B)):=
+λ hnAB ,  and.intro (λ hA,  hnAB (or.inl hA)) (λ hB, hnAB (or.inr hB)) 
 
+  
+
+  
+variables (A B C : Prop)

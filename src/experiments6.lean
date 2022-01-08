@@ -20,6 +20,7 @@ end
 
  #print eq
 
+#print prefix list
 
 
 lemma jtt : ¬ (1=0) :=
@@ -35,9 +36,14 @@ namespace hidden
 /-
 list is defined in init.core.lean
 -/
+
 inductive list (T : Type u)
 | nil : list
 | cons (hd : T) (tl : list) : list
+
+
+#print prefix list
+
 
 #check list.nil.is_right_id 
 
