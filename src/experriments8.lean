@@ -73,3 +73,59 @@ begin
   have h4 := g_not_inj h3,
   assumption,
   end
+
+  universe u
+
+#print f
+/-
+def f._main : X → Y :=
+λ (ᾰ : X), ᾰ.cases_on (id_rhs Y q)
+-/
+
+#print f._main
+  
+  /-
+  X.cases_on : Π {C : X → Sort u_1} (n : X), C p → C n
+  -/
+  
+
+
+
+def jt : Y → Type := @Y.rec (λ x, Type) ℕ bool
+
+
+
+#check @Y.rec (λ x, jt x) (5 : ℕ ) (tt : bool)
+
+
+
+
+#check @nat.rec (λ x, Prop)
+
+/-
+inductive nat : Type
+constructors:
+nat.zero : ℕ
+nat.succ : ℕ → ℕ
+-/
+variable (x : ℕ )
+#print nat
+#check @nat.rec
+def nat_recursor_constant : ∀ (S : Type), S→ (∀ (n : ℕ), S → S) → (ℕ → S) := λ S, @nat.rec (λ x, S)
+#check nat_recursor_constant ℕ 0 
+#check @nat_recursor_constant ℕ 0 (λ x , x.succ) 
+#reduce @nat_recursor_constant ℕ 0 (λ x, x.succ) 4
+
+
+#check @nat.cast ℕ x
+#check (λ (x : ℕ ) , x.cast)
+
+#check Π (x : ℕ ), ℕ 
+
+def sq : ℕ → ℕ 
+| nat.zero := nat.zero
+| (nat.succ t) := t 
+
+#eval sq 3
+
+#print sq._main
