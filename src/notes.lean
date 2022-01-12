@@ -87,13 +87,16 @@ def jtr {α : Sort u} (a b : α) := jteq b a
 theorem jteq.subst {α : Sort u} {r s: α} (P : α → Prop) (h₁ : jteq r s) (h₂ : P r) : P s :=
 @jteq.rec α r P h₂ s h₁
 
+theorem jteq.subst2 {α : Sort u} {r s: α} (P : α → Prop) (h₁ : jteq r s) (h₂ : P r) : P s :=
+jteq.rec h₂ h₁
 /- Amazingly this is sufficient to show that jteq is symmetric and transitive.
 -/
 
 theorem jteq.symm {α : Sort u} {a b : α} (h : jteq a b) : jteq b a  :=
 @jteq.subst α a b (λ b, jteq b a) h (@jteq.refl α a) 
 
-
+theorem jteq.symm2 {α : Sort u} {a b : α} (h : jteq a b) : jteq b a  :=
+@jteq.subst α a b (λ b, jteq b a) h (@jteq.refl α a) 
 /- 
 To decode this proof, notice that our predicate is jteq _ a, so P a  is jteq a a  and P b is jteq b a
 So P a is true by reflexivity and P a with a=b → P b  which is b=a.
