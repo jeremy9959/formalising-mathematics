@@ -93,9 +93,20 @@ eq.refl : ∀ {α : Sort u} (a : α), a = a
 protected eliminator eq.rec : Π {α : Sort u} {a : α} {C : α → Sort l}, C a → Π {ᾰ : α}, a = ᾰ → C ᾰ
 -/
 
-#print eq.rec
+inductive jteq {α : Type} : α→α→Prop
+| refl (a : α) : jteq a a 
+
+def r2 {α : Type} : α→α→Prop := λ a b, jteq b a 
+
+lemma r2refl {α : Type} {a : α} : r2 a a := jteq.refl a
 
 
+/-
+jteq.rec : (Π (a : ?M_1), ?M_2 a a) → Π {ᾰ ᾰ_1 : ?M_1}, jteq ᾰ ᾰ_1 → ?M_2 ᾰ ᾰ_1
+-/
 
+example (α : Type) (a b : α) : jteq a b = jteq b a :=
+begin
+  
+end
 
-#print list.no_confusion
