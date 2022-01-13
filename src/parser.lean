@@ -22,7 +22,7 @@ open postfix_lang
 -- now we can make elements of this type like so
 #check postfix_lang.add
 #check postfix_lang.sub
-#check postfix_lang.nat 2
+#check postfix_lang.nat 
 -- every element is either one of these symbols or a natural number
 
 -- converts a string token, either + - or * into the postfix lang
@@ -31,6 +31,7 @@ def of_string : string → postfix_lang
 | "-" := sub
 | "*" := mul
 | s   := nat (string.to_nat s) -- anything that doesn't match the above gets converted to a nat
+
 
 -- the core of the algorithm, a recursive function that takes a list of tokens and stack of integers
 -- so far and returns the new stack
@@ -47,17 +48,29 @@ def eval_postfix_aux : list postfix_lang → list ℤ → list ℤ
 | _ _ := [] -- if we see anything else there is probably a mistake
 
 -- we can call this directly on a list of postfix_langs like so
-#eval eval_postfix_aux [nat 2, nat 3, nat 1, mul, add, nat 9, sub] []
+#eval eval_postfix_aux [nat (-2), nat 3, nat 1, mul, add, nat 9, sub] []
 #eval eval_postfix_aux [nat 2, nat 3, nat 1, mul, add, nat 9, sub] [1] -- starting with a nonempty stack
 #eval eval_postfix_aux [nat 2, nat 3, nat 1, mul, add, nat 9, sub, sub] [] -- nonsense case
 
 -- but you asked for a function from strings to evaluations, we can do this like so:
 -- call the above algorithm on a string by tokenising, running eval_postfix_aux and then taking the
 -- head of the resulting list
-def eval_postfix (s : string) : ℤ := (eval_postfix_aux ((s.split_on ' ').map of_string) []).head
+def eval_postfix (s : string) :  ℤ := (eval_postfix_aux ((s.split_on ' ').map of_string) []).head
 
 #eval eval_postfix "2 3 1 * + 9 -"
-#eval eval_postfix "2 3 1 * + 9 - 7 +"
+#eval eval_postfix "2 3 1 * + 9 - 7 + +"
+
+
 
 -- we get zero if we do nonesense
-#eval eval_postfix "2 3 1 * + 9 - - - -"
+#eval eval_postfix "-"
+variable (s : string)
+#check (eval_postfix_aux ((s.split_on ' ').map of_string) []).nth 0
+
+#check eval_postfix_aux
+#check postfix_lang.add
+
+def wf (x : list postfix_lang) : Prop := list.length(eval_postfix_aux x []) = 1
+
+
+
