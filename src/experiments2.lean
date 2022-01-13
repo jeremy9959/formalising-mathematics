@@ -6,34 +6,49 @@ assume y : α,
 show p y, from (h y).left
 
 
-def f (a b : ℕ ) : ℕ → ℕ := λ c, a+b+c
-
-#eval f 2 3 5
-
-#check bool
-
-#check sum
-
-variables (x y : ℕ )
-
-example (p q : Prop) : p ∨ q → q ∨ p :=
+example (α : Type*) : α → α :=
 begin
-  intro h,
-  cases h with hp hq,
-  -- case hp : p
-  apply or.inr, exact hp,
-  -- case hq : q
-  apply or.inl, exact hq,
+  intro a,
+  exact a
+end
+
+example (α : Type*) : ∀ x : α, x = x :=
+begin
+  intro x,
+  exact eq.refl x,
+end
+
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
+begin
+  intros a b c hab hac,
+  transitivity a,
+  symmetry,
+  assumption,
+  assumption,
+end
+
+example  (a : ℕ) : a = a :=
+begin
+  revert a,
+  intro y,
+  reflexivity,
+end
+
+example : 2 + 3 = 5 :=
+begin
+  generalize h : 3 = x,
+  --revert x,
+  rw ←h,
+  -- goal is x : ℕ ⊢ 2 + x = 5,
 end
 
 example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
 begin
   intro h,
   cases h with x px,
-  
-
-  
-
+  existsi x,
+  left,
+  assumption,
 end
 
 example (p q : ℕ → Prop) :
@@ -42,20 +57,8 @@ begin
   intro h,
   cases h with x hpq,
   cases hpq with hp hq,
-  constructor,
-  constructor,
-  assumption,
-  assumption,
-end
-
-def swap_pair {α : Type u} {β : Type v} : α × β → β × α :=
-begin
-  intro p,
-  cases p with hp hq,
-  constructor,
-
-  exact hq,
-  exact hp,
+  existsi x,
+  split; assumption,
 end
 
 open nat
@@ -63,7 +66,11 @@ open nat
 example (P : ℕ → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : ℕ) :
   P m :=
 begin
-  cases m,
-  exact h₀,
-  exact h₁ m,
+  cases m with m', exact h₀, exact h₁ m'
+end
+
+example (n : ℕ) : n + 1 = nat.succ n :=
+begin
+  show nat.succ n = nat.succ n,
+  reflexivity,
 end
