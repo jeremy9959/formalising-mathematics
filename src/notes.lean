@@ -92,15 +92,15 @@ We can put this in the form of a theorem, following Buzzard's blog post on induc
 
 def jtr {α : Sort u} (a b : α) := λ (a b : α), jteq b a
 
-theorem jteq.subst {α : Sort u} {r s: α} (P : α → Prop) (h₁ : jteq r s) (h₂ : P r) : P s :=
-@jteq.rec α r P h₂ s h₁
+theorem jteq.subst : ∀ (α : Sort u) {r s : α} (P : α → Prop), @jteq α r s → P r → P s :=
+λ (α : Sort u) (r s : α) (P : α→ Prop) (h₁ : @jteq α r s) (h₂ : P r), @jteq.rec α r P h₂ s h₁ 
 
 
 /- Amazingly this is sufficient to show that jteq is symmetric and transitive.
 -/
 
 theorem jteq.symm {α : Sort u} {a b : α} (h : jteq a b) : jteq b a  :=
-@jteq.subst α a b (λ b, jteq b a) h (@jteq.refl α a) 
+@jteq.subst α a b (λ x, jteq x a) h (@jteq.refl α a) 
 
 
 /- 
@@ -116,18 +116,34 @@ lean figures out which predicate to use**
 For transitivity, here is a proof. 
  
 Our strategy is:
-P(x) : x=c
+Let  be the predicate P(x) : x=c
 P(b) : true by h₂
-b=a : true by symm of h₁
-P(b) and b=a implies P(a) which is a=c.
+b=a : true by symm of h₁ (@jteq.symm α a b h₁)
+P(b) and b=a implies P(a) which is a=c. Notice that r=b and s = a in this case, so the full proof is:
+  @jteq.subst α b a (λ x, @jteq α x c) (@jteq.symm α a b h₁) (h₂)
+                r s  P                  b=a                   P(b)  -> P(a) which is a=c
 
 Our predicate is (λ x, jteq x c) 
-In jteq.subst, the hypothesis h₁ has type jteq r s, and the arguments are given in the order r s.
-We want jteq b a, so we switch h₁, and then we need to switch the order of the arguments in the call. 
+
+It takes some thought to see why b and a are switched in the call to @jteq.subst. 
 -/
 
-theorem jteq.trans {α : Sort u} (a b c :α) (h₁ : jteq a b) (h₂ : jteq b c) : jteq a c:=
-@jteq.subst α b a (λ x, @jteq α x c) (@jteq.symm α a b h₁) (h₂)
+theorem jteq.trans : ∀ {α : Sort u} (a b c : α), @jteq α a b → @jteq α b c  → @jteq α a c:=
+λ (α : Sort u) (a b c : α) (h₁ : @jteq α a b) (h₂ : @jteq α b c), @jteq.subst α b a (λ x, @jteq α x c) (@jteq.symm α a b h₁) (h₂)
+
+/- 
+Just to illustrate the mystery of implicit arguments, here is the same code from
+the core.init file of mathlib.  Notice that the arguments are treated as implicit.
+The MOST mysterious part is how does this infer the correct predicate?  (We had to manually construct the predicate
+as λ x, jteq x a because we needed the variable on the left of the equality sometimes.
+
+The key seems to be this elab_as_eliminator attribute on subst. This is discussed in Section 6.10 of TPIL
+in precisely this context, where the problem is figuring out a predicate for use in eq.subst.  However, no
+explanation is given as to how this particular attribute helps in this situation.
+
+Nevertheless we can see that symm infers the correct predicate Q(x) : x=a.
+
+-/
 
 
 namespace hidden
@@ -141,10 +157,67 @@ inductive eq2 {α : Sort u} (a : α) : α → Prop
 lemma eq2.subst {α : Sort u} {P : α → Prop} {a b : α} (h₁ : eq2 a b) (h₂ : P a) : P b :=
 eq2.rec h₂ h₁
 
-@[trans] lemma eq2.trans {α : Sort u} {a b c : α} (h₁ : eq2 a b) (h₂ : eq2 b c) : eq2 a c:=
-eq2.subst h₂  h₁
-
 @[symm] lemma eq2.symm {α : Sort u} {a b : α} (h : eq2 a b) : eq2 b a :=
 eq2.subst h rfl 
 
+variables (h : eq2 a b)
+
+
+
+#reduce eq2.symm h
+
+-- @eq2.rec α a (λ (_x : α), @eq2 α _x a) (@eq2.refl α a) b h
+
+/-
+Note that the predicate is as claimed. 
+-/
+
 end hidden
+/- 
+
+To beat this horse completely dead, remove that attribute and look at the code again. 
+
+
+-/
+
+namespace hidden2
+
+inductive eq2 {α : Sort u} (a : α) : α → Prop
+| refl [] : eq2 a
+
+@[pattern] def rfl {α : Sort u} {a : α} : eq2 a a := eq2.refl a
+
+@[subst]
+lemma eq2.subst {α : Sort u} {P : α → Prop} {a b : α} (h₁ : eq2 a b) (h₂ : P a) : P b :=
+eq2.rec h₂ h₁
+
+@[symm] lemma eq2.symm {α : Sort u} {a b : α} (h : eq2 a b) : eq2 b a :=
+eq2.subst h rfl 
+/-
+The error for symm in this case is the following:
+
+type mismatch at application
+  h.subst
+term
+  h
+has type
+  @eq2 α a b
+but is expected to have type
+  @eq2 α ?m_1 a
+
+In other words, the inferred predicate has the arguments reversed.....and we can see this by looking at 
+the reduction
+-/
+
+variables (h : eq2 a b)
+
+#reduce eq2.subst h rfl
+
+/-
+@eq2.rec α a (λ (_x : α), @eq2 α a _x) (@eq2.refl α a) b h
+ 
+The predicate that was inferred is P(x) : a=x. 
+-/
+
+end hidden2
+
