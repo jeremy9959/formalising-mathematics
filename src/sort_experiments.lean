@@ -53,19 +53,13 @@ def srt : list ℕ → list ℕ
 | [] := []
 | (a::l) := stinsert a (srt l)
 
-#check list ℕ 
-
-#eval srt [1,2,3]
 
 lemma nil_sorted : ∀ (l : list ℕ), (l=[]) → jtsort l
 :=
 begin
-  intro l,
-  cases l with hd tl,
-  intro,
-  exact jtsort.nil,
-  intro h,
-  contradiction,
+  intros l h,
+  subst h,
+  apply jtsort.nil,
 end
 
 lemma tail_sorted : ∀ (a : ℕ ) (l : list ℕ ), jtsort (a::l) → jtsort l :=
@@ -75,52 +69,50 @@ begin
   exact h2,
 end
 
-
 lemma step : ∀ (a b: ℕ ) (l : list ℕ ), (∀ (a'∈ l), (b≥a')) ∧ (a≥ b) → ∀ (a' ∈ (b::l)), a≥ a' :=
 begin
-  intros a b l H,
-  cases H with Ha Hb,
-  intro x,
-  intro Hab,
+  rintros a b l ⟨ Ha, Hb⟩ x Hab,
   cases Hab,
-  have Hba := eq.symm Hab,
   subst_vars,
   exact Hb,
-  have  hK:= Ha x Hab,
+  have  HK := Ha x Hab,
   linarith,
 end
-
-
 
 lemma un : ∀ (a x : ℕ) (l : list ℕ ), (x ∈ (stinsert a l)) → (x ∈ (a::l)) :=
 begin
   intros a x l,
   induction l with hd tl H,
-  intro h,
-  cases h,
-  subst h,
-  apply mem_singleton_self,
-  cases h,
-  rw stinsert,
-  split_ifs,
-  intro H,
-  exact H,
-  intro H1,
-  have Hk := eq_or_ne_mem_of_mem H1,
-  cases Hk,
-  subst Hk,
-  simp,
-  cases Hk,
-  have Hn := H Hk_right,
-  by_cases x=a,
-  subst h,
-  simp,
-  have Hm := mem_of_ne_of_mem h Hn,
-  rw mem_cons_iff,
-  right,
-  rw mem_cons_iff,
-  right,
-  exact Hm,
+  { -- empty list case
+    rintro  h,
+    exact h,
+  },
+  { -- nonempty list case
+
+    intro Hp,
+    rw stinsert at Hp, 
+    split_ifs at Hp,
+      { -- a gets inserted at beginning
+        exact Hp,
+      },
+    -- a gets inserted inside somewhere
+      cases Hp with xhd xtl,
+      simp,
+      right,
+      left,
+      exact xhd,
+    {
+    have H2 := H xtl,
+    simp,
+    simp at H2,
+    cases H2,
+    left,
+    exact H2,
+    right,
+    right,
+    exact H2,
+    },
+},
 end
 
 
@@ -143,8 +135,7 @@ begin
   have HW := tail_sorted b l H,
   have HN := iH HW,
   apply jtsort.cons, 
-  intro x,
-  intro Hx,
+  intros x Hx,
   have HM := jtsort_cons2 b l,
   cases HM with HL HR,
   have HP1 := (HL H).left,
@@ -172,3 +163,5 @@ end
 
 
 end list
+#print list.has_mem
+#print classes
