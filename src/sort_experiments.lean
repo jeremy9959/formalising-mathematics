@@ -43,8 +43,6 @@ because b is greater then or equal to  every element of s by assumption, and b>a
 Therefore b::(stinsert a s) is sorted. 
 -/
 
-
-
 def stinsert  : ℕ → list ℕ → list ℕ 
 | a  [] := [a]
 | a  (b::l) := if a ≥ b then a::b::l else b::(stinsert a l)
