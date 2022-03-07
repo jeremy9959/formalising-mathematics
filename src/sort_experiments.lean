@@ -119,10 +119,9 @@ lemma ins_sorted : ∀ (a : ℕ ) (l : list ℕ ), jtsort l → jtsort (stinsert
 begin
   intros a l H,
   induction l with b l iH,
-    
-    have hK := (jtsort.cons a []) _ H,
-    exact hK,
-  
+  rw stinsert,
+  have hK := (jtsort.cons a []) _ H,
+  exact hK,
   intros a' hN,
   cases hN,
   rw stinsert,
@@ -162,5 +161,3 @@ end
 
 
 end list
-#print list.has_mem
-#print classes
